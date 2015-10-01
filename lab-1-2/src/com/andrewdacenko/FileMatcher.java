@@ -15,6 +15,11 @@ public class FileMatcher {
         matches = calculateMatches(content);
     }
 
+    @Override
+    public String toString() {
+        return file.getName() + ": " + matches;
+    }
+
     private int calculateMatches(String content) {
         int matches = 0;
         String[] words = content.split(" ");
@@ -46,10 +51,6 @@ public class FileMatcher {
         }
 
         return "";
-    }
-
-    public int getMatches () {
-        return matches;
     }
 }
 
