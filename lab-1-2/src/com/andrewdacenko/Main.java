@@ -17,7 +17,8 @@ public class Main {
             if (file.isFile())
             {
                 files = file.getName();
-                System.out.println(files);
+                FileMatcher fm = new FileMatcher(file);
+                System.out.println(fm.content);
             }
         }
     }
