@@ -4,15 +4,17 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class MainWindow extends Frame implements ActionListener {
-    // A⋅x2 +A⋅y2 +B⋅x+C⋅y+D=0
+
     MenuBar menuBar;
     Menu menu;
     MenuItem showImage, showPlot, clearArea;
     Panel controlPanel;
-    ImageDrawer imageDrawer;
-    CanvasArea canvasArea;
 
-    public MainWindow() {
+    CanvasArea canvasArea;
+    ImageDrawer imageDrawer;
+    PlotDrawer plotDrawer;
+
+    public MainWindow() throws Exception {
         super("GUI Window");
         setTitle("AWT Menu");
         setSize(800, 600);
@@ -20,7 +22,9 @@ public class MainWindow extends Frame implements ActionListener {
         setLayout(new FlowLayout());
         setLocationRelativeTo(null);
 
+        canvasArea = new CanvasArea();
         imageDrawer = new ImageDrawer(this);
+        plotDrawer = new PlotDrawer();
 
         menuBar = new MenuBar();
 
@@ -30,6 +34,7 @@ public class MainWindow extends Frame implements ActionListener {
         showImage.addActionListener(this::drawImage);
 
         showPlot = new MenuItem("Show Plot");
+        showPlot.addActionListener(this::drawPlot);
 
         clearArea = new MenuItem("Clear Area");
         clearArea.addActionListener(this::clearCanvas);
@@ -47,7 +52,6 @@ public class MainWindow extends Frame implements ActionListener {
 
         add(controlPanel);
 
-        canvasArea = new CanvasArea();
         controlPanel.add(canvasArea);
     }
 
@@ -61,6 +65,11 @@ public class MainWindow extends Frame implements ActionListener {
         }
     }
 
+    private void drawPlot(ActionEvent ae) {
+        canvasArea.clear();
+        plotDrawer.drawPlot(canvasArea);
+    }
+
     private void clearCanvas(ActionEvent ae) {
         canvasArea.clear();
     }
@@ -70,7 +79,11 @@ public class MainWindow extends Frame implements ActionListener {
     }
 
     public static void main(String args[]) {
-        MainWindow mw = new MainWindow();
-        mw.setVisible(true);
+        try {
+            MainWindow mw = new MainWindow();
+            mw.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

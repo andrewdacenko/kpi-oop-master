@@ -10,7 +10,7 @@ public class CanvasArea extends Canvas {
     public void paint(Graphics g) {
         Graphics2D g2;
         g2 = (Graphics2D) g;
-        g2.drawString("It is a custom canvas area", 70, 70);
+        g2.drawString("Hello! Please select any option from menu to get started.", 230, 250);
     }
 
     public void clear() {
