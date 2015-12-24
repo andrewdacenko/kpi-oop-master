@@ -1,6 +1,7 @@
 package com.andrewdacenko;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class Triangle {
             "scalene"
     };
 
-    public Triangle(JSONArray jHeads) {
+    public Triangle(JSONArray jHeads) throws JSONException {
         heads = getHeads(jHeads);
         type = getType();
     }
@@ -86,7 +87,7 @@ public class Triangle {
         return Double.parseDouble(String.format("%.2f", sqrt));
     }
 
-    public static ArrayList<TriangleHead> getHeads(JSONArray jHeads) {
+    public static ArrayList<TriangleHead> getHeads(JSONArray jHeads) throws JSONException {
         ArrayList<TriangleHead> aHeads = new ArrayList<TriangleHead>(3){
             private static final long serialVersionUID = 1L;
 

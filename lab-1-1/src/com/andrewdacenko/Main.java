@@ -1,6 +1,7 @@
 package com.andrewdacenko;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -27,6 +28,8 @@ public class Main {
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
