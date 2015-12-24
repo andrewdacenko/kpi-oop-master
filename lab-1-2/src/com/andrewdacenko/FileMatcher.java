@@ -6,7 +6,7 @@ public class FileMatcher {
 
     public static final Character LETTER = 'a';
     private final File file;
-    private final String content;
+    public final String content;
     private final int matches;
 
     public FileMatcher(File file) {
@@ -36,7 +36,6 @@ public class FileMatcher {
 
     private String readFile() {
         try {
-
             final BufferedReader reader = new BufferedReader(new FileReader(file));
             final StringBuilder contents = new StringBuilder();
             while (reader.ready()) {
@@ -44,8 +43,6 @@ public class FileMatcher {
             }
             reader.close();
             return contents.toString();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

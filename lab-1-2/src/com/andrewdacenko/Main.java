@@ -16,17 +16,12 @@ public class Main {
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
 
+        assert listOfFiles != null;
         for (File file : listOfFiles)
         {
             if (file.isFile())
             {
-                tasks.submit(new Callable() {
-                    @Override
-                    public Object call() throws Exception {
-                        FileMatcher fm = new FileMatcher(file);
-                        return fm;
-                    }
-                });
+                tasks.submit(new FileCallable(file));
             }
         }
 
@@ -39,9 +34,7 @@ public class Main {
 
                 out.write(task.get() + " matches" + System.getProperty("line.separator"));
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
