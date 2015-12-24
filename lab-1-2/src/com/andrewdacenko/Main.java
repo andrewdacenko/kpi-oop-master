@@ -32,7 +32,9 @@ public class Main {
             for (File file : listOfFiles) {
                 Future<Long> task = tasks.take();
 
-                out.write(task.get() + " matches" + System.getProperty("line.separator"));
+                String result = task.get() + " matches";
+                out.write(result + System.getProperty("line.separator"));
+                System.out.println(result);
             }
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
