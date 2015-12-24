@@ -34,9 +34,7 @@ public class Main {
 
                 out.write(task.get() + " matches" + System.getProperty("line.separator"));
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         } finally {
             if (out != null) {
