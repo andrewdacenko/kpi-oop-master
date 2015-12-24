@@ -31,8 +31,11 @@ public class MainWindow extends Frame implements ActionListener {
 
         showImage = new MenuItem("Show Image");
         showImage.addActionListener(this::drawImage);
+
         showPlot = new MenuItem("Show Plot");
+
         clearArea = new MenuItem("Clear Area");
+        clearArea.addActionListener(this::clearCanvas);
 
         menu.add(showImage);
         menu.add(showPlot);
@@ -53,10 +56,16 @@ public class MainWindow extends Frame implements ActionListener {
 
     private void drawImage(ActionEvent ae) {
         try {
-            canvasArea.getGraphics().drawImage(imageDrawer.getImage(canvasArea), 0, 0, null);
+            Image image = imageDrawer.getImage(canvasArea);
+            canvasArea.clear();
+            canvasArea.getGraphics().drawImage(image, 0, 0, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void clearCanvas(ActionEvent ae) {
+        canvasArea.clear();
     }
 
     public void actionPerformed(ActionEvent ae) {
