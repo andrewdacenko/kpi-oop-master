@@ -16,7 +16,7 @@ public class MainWindow extends Frame implements ActionListener {
 
     public MainWindow() throws Exception {
         super("GUI Window");
-        setTitle("AWT Menu");
+        setTitle("Canvas Window");
         setSize(800, 600);
         addWindowListener(new BasicWindowMonitor());
         setLayout(new FlowLayout());
