@@ -19,10 +19,10 @@ public class Main {
             String file = readFile("triangles.json", StandardCharsets.UTF_8);
             JSONArray arr = new JSONArray(file);
             System.out.println(arr);
-            HashSet<HashSet<TriangleHead>> trianglesHashSet = new HashSet<HashSet<TriangleHead>>();
+            HashSet<HeadsStore> trianglesHashSet = new HashSet<HeadsStore>();
 
             for (int i = 0; i < arr.length(); i++) {
-                HashSet<TriangleHead> heads = new HashSet<TriangleHead>();
+                HeadsStore heads = new HeadsStore();
 
                 JSONArray headsArray = arr.getJSONArray(i);
 
