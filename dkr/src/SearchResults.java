@@ -12,6 +12,7 @@ public class SearchResults extends JDialog {
         setModal(true);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onOK();

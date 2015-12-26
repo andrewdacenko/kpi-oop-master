@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -75,14 +76,24 @@ public class MainForm extends JFrame implements ActionListener {
                 ArrayList<String> students = new ArrayList<String>();
                 for (Object v : db.databaseResults) {
                     Object[] row = (Object[]) v;
-                    Object[] scores = (Object[]) row[5];
+                    Object[][] scores = (Object[][]) row[5];
 
-                    if (Float.parseFloat((String) scores[1]) > 4.5) {
-                        System.out.println(row[0] + " " + row[0] + ": " + row[1]);
+                    boolean onlyBest = true;
+
+                    for(int score = 0; score < scores.length; score++) {
+                        if (Integer.parseInt((String) scores[score][1]) != 5) {
+                            onlyBest = false;
+                            break;
+                        }
+                    }
+
+                    if(onlyBest) {
                         students.add((String) row[0]);
                     }
                 }
-                new SearchResults("Only the Best", students.toArray());
+                System.out.println(students);
+                SearchResults sr = new SearchResults("Only the Best", students.toArray());
+                sr.setVisible(true);
                 break;
 
             case ButtonsCommands.GOOD:
