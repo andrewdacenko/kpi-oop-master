@@ -82,8 +82,6 @@ public class Database {
     public DefaultTableModel defaultTableModel;
 
     public Database() {
-        // Прізвище, Ім’я, По батькові, Студентський квиток, Курс, Країна, Пол, Успішність
-
         columns = new Object[]{
                 "Full name",
                 "Student Id",
