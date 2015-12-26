@@ -1,6 +1,13 @@
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Database {
+
+    public ArrayList<Student> students = new ArrayList<Student>();
 
     public Object[][] databaseResults = {
             {
@@ -9,16 +16,13 @@ public class Database {
                     "5",
                     "male",
                     "Ukraine",
-                    new Object[][]{
-                            {
-                                    "History",
-                                    "5"
-                            },
-                            {
-                                    "Math",
-                                    "5"
-                            }
-                    }
+                    new Object[][]{{
+                            "History",
+                            "5"
+                    }, {
+                            "Math",
+                            "5"
+                    }}
             },
             {
                     "Misha Beherskiy",
@@ -29,6 +33,9 @@ public class Database {
                     new Object[][]{{
                             "OOP",
                             "4"
+                    }, {
+                            "Global",
+                            "5"
                     }}
             },
             {
@@ -79,9 +86,22 @@ public class Database {
 
     public Object[] columns;
 
-    public DefaultTableModel defaultTableModel;
+    public TableModel defaultTableModel;
 
     public Database() {
+        for (Object[] o : databaseResults) {
+            Scores scores = new Scores();
+
+            Object[][] oScores = (Object[][]) o[5];
+
+            for (Object[] oScore : oScores) {
+                scores.add(new Score(oScore));
+            }
+
+            o[5] = scores;
+            students.add(new Student(o));
+        }
+
         columns = new Object[]{
                 "Full name",
                 "Student Id",
@@ -91,16 +111,22 @@ public class Database {
                 "Scores"
         };
 
-        defaultTableModel = new DefaultTableModel(databaseResults, columns) {
-            public Class getColumnClass(int column) { // Override the getColumnClass method to get the
-                Class classToReturn;                    // class types of the data retrieved from the database
+        defaultTableModel = new AbstractTableModel() {
+            @Override
+            public int getRowCount() {
+                return students.size();
+            }
 
-                if ((column >= 0) && column < getColumnCount()) {
-                    classToReturn = getValueAt(0, column).getClass();
-                } else {
-                    classToReturn = Object.class;
-                }
-                return classToReturn;
+            @Override
+            public int getColumnCount() {
+                return 6;
+            }
+
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                Student s = students.get(rowIndex);
+
+                return s.getDataByIndex(columnIndex);
             }
         };
     }

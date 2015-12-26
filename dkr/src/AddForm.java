@@ -1,5 +1,5 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
 import java.awt.event.*;
 
 public class AddForm extends JDialog {
@@ -18,11 +18,15 @@ public class AddForm extends JDialog {
     private JTextField countryField;
     private JLabel countryLabel;
 
-    DefaultTableModel scoresModel;
+    AbstractTableModel scoresModel;
+    Scores scores;
+    Object[][] oScores;
+    JDialog self;
 
     private boolean isOK;
 
     public AddForm() {
+        self = this;
         setContentPane(addPanel);
         setModal(true);
         getRootPane().setDefaultButton(okButton);
@@ -64,7 +68,43 @@ public class AddForm extends JDialog {
                 "Score"
         };
 
-        scoresModel = new DefaultTableModel(null, columns);
+        scores = new Scores();
+
+        Object[] defaultObj = {"discipline", "5"};
+
+        scores.add(new Score(defaultObj));
+
+        oScores = new Object[][]{{"math", "2"}};
+
+        scoresModel = new AbstractTableModel() {
+            @Override
+            public int getRowCount() {
+                return scores.size();
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 2;
+            }
+
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                Score s = scores.get(rowIndex);
+
+                return columnIndex == 0 ? s.discipline : s.mark;
+            }
+
+            @Override
+            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+                Score s = scores.get(rowIndex);
+                if (columnIndex == 0) {
+                    s.discipline = (String) aValue;
+                } else {
+                    s.mark = Integer.parseInt((String) aValue);
+                }
+            }
+        };
+
         scoresTable = new JTable(scoresModel);
         scoresTable.setAutoCreateColumnsFromModel(true);
 
@@ -73,9 +113,8 @@ public class AddForm extends JDialog {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 if (e.getClickCount() == 2) {
-                    scoresModel.addRow(new Object[]{"", ""});
-                    int row = scoresModel.getRowCount() - 1;
-                    scoresTable.setRowSelectionInterval(row, row);
+                    scores.add(new Score(new Object[]{"new", "0"}));
+                    self.repaint();
                 }
             }
         });
@@ -91,20 +130,22 @@ public class AddForm extends JDialog {
         dispose();
     }
 
-    public Object[] showDialog() {
+    public Student showDialog() {
         pack();
         setVisible(true);
 
-        if (isOK)
-            return new Object[]{
+        if (isOK) {
+            Student s = new Student(new Object[]{
                     nameField.getText(),
                     idField.getText(),
                     courseField.getText(),
                     genderBox.getSelectedItem(),
                     countryField.getText(),
-                    scoresModel.getDataVector()
-            };
-        else
+                    scores
+            });
+
+            return s;
+        } else
             return null;
     }
 }

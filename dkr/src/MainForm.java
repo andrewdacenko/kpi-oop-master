@@ -57,37 +57,19 @@ public class MainForm extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case ButtonsCommands.ADD:
-                Object[] result = new AddForm().showDialog();
-                if (result != null)
-                    db.defaultTableModel.addRow(result);
-                break;
-            case ButtonsCommands.EDIT:
-//                ArrayList<String> students = new ArrayList<String>();
-//                for(Object v : db.databaseResults){//defaultTableModel.getDataVector().toArray()){
-//                    Object[] row = (Object[])v;
-//                    if( Float.parseFloat((String)row[5]) > 4.5) {
-//                        System.out.println(row[0]+" "+row[5]);
-//                        students.add((String)row[0]);
-//                    }
-//                }
-//                new FindDialog("Average > 4.5", students.toArray()).show();
+                Student result = new AddForm().showDialog();
+                if (result != null) {
+                    db.students.add(result);
+                    this.repaint();
+                }
                 break;
             case ButtonsCommands.BEST:
                 ArrayList<String> students = new ArrayList<String>();
                 for (Object v : db.databaseResults) {
                     Object[] row = (Object[]) v;
-                    Object[][] scores = (Object[][]) row[5];
+                    Scores scores = (Scores) row[5];
 
-                    boolean onlyBest = true;
-
-                    for(int score = 0; score < scores.length; score++) {
-                        if (Integer.parseInt((String) scores[score][1]) != 5) {
-                            onlyBest = false;
-                            break;
-                        }
-                    }
-
-                    if(onlyBest) {
+                    if (scores.getAverage() >= 5) {
                         students.add((String) row[0]);
                     }
                 }
@@ -101,7 +83,8 @@ public class MainForm extends JFrame implements ActionListener {
 
             case ButtonsCommands.REMOVE:
                 if (studentsTable.getSelectedRow() >= 0) {
-                    db.defaultTableModel.removeRow(studentsTable.getSelectedRow());
+                    db.students.remove(studentsTable.getSelectedRow());
+                    this.repaint();
                 }
                 break;
         }
@@ -110,15 +93,7 @@ public class MainForm extends JFrame implements ActionListener {
     private void createUIComponents() {
         db = new Database();
 
-        studentsTable = new JTable(db.defaultTableModel) {
-            public TableCellRenderer getCellRenderer(int row, int column) {
-                if (column == getColumnCount()) {
-//                    return scoresRenderer;
-                }
-
-                return super.getCellRenderer(row, column);
-            }
-        };
+        studentsTable = new JTable(db.defaultTableModel);
 
         TableColumn genderColumn = studentsTable.getColumnModel().getColumn(3);
 
@@ -126,10 +101,5 @@ public class MainForm extends JFrame implements ActionListener {
         comboBox.addItem("male");
         comboBox.addItem("female");
         genderColumn.setCellEditor(new DefaultCellEditor(comboBox));
-
-        TableColumn scoresColumn = studentsTable.getColumnModel().getColumn(5);
-//
-//        JTable scoresTable = new JTable();
-//        scoresColumn.setCellEditor(new DefaultCellEditor(scoresTable));
     }
 }
