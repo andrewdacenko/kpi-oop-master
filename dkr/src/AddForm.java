@@ -15,6 +15,8 @@ public class AddForm extends JDialog {
     private JTable scoresTable;
     private JButton okButton;
     private JButton cancelButton;
+    private JTextField countryField;
+    private JLabel countryLabel;
 
     DefaultTableModel scoresModel;
 
@@ -99,6 +101,7 @@ public class AddForm extends JDialog {
                     idField.getText(),
                     courseField.getText(),
                     genderBox.getSelectedItem(),
+                    countryField.getText(),
                     scoresModel.getDataVector()
             };
         else

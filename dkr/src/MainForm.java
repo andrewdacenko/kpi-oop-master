@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -69,14 +73,16 @@ public class MainForm extends JFrame implements ActionListener {
                 break;
             case ButtonsCommands.BEST:
                 ArrayList<String> students = new ArrayList<String>();
-                for (Object v : db.databaseResults) {//defaultTableModel.getDataVector().toArray()){
+                for (Object v : db.databaseResults) {
                     Object[] row = (Object[]) v;
-                    if (Float.parseFloat((String) ((Object[]) row[5])[1]) > 4.5) {
+                    Object[] scores = (Object[]) row[5];
+
+                    if (Float.parseFloat((String) scores[1]) > 4.5) {
                         System.out.println(row[0] + " " + row[0] + ": " + row[1]);
                         students.add((String) row[0]);
                     }
                 }
-//                new FindDialog("Average > 4.5", students.toArray()).show();
+                new SearchResults("Only the Best", students.toArray());
                 break;
 
             case ButtonsCommands.GOOD:
@@ -92,6 +98,27 @@ public class MainForm extends JFrame implements ActionListener {
 
     private void createUIComponents() {
         db = new Database();
-        studentsTable = new JTable(db.defaultTableModel);
+
+        studentsTable = new JTable(db.defaultTableModel) {
+            public TableCellRenderer getCellRenderer(int row, int column) {
+                if (column == getColumnCount()) {
+//                    return scoresRenderer;
+                }
+
+                return super.getCellRenderer(row, column);
+            }
+        };
+
+        TableColumn genderColumn = studentsTable.getColumnModel().getColumn(3);
+
+        JComboBox comboBox = new JComboBox();
+        comboBox.addItem("male");
+        comboBox.addItem("female");
+        genderColumn.setCellEditor(new DefaultCellEditor(comboBox));
+
+        TableColumn scoresColumn = studentsTable.getColumnModel().getColumn(5);
+//
+//        JTable scoresTable = new JTable();
+//        scoresColumn.setCellEditor(new DefaultCellEditor(scoresTable));
     }
 }

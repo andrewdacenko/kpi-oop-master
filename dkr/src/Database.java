@@ -9,9 +9,15 @@ public class Database {
                     "5",
                     "male",
                     "Ukraine",
-                    new Object[]{
-                            "History",
-                            "5"
+                    new Object[][]{
+                            {
+                                    "History",
+                                    "5"
+                            },
+                            {
+                                    "Math",
+                                    "5"
+                            }
                     }
             },
             {
@@ -20,10 +26,10 @@ public class Database {
                     "5",
                     "male",
                     "Ukraine",
-                    new Object[]{
+                    new Object[][]{{
                             "OOP",
                             "4"
-                    }
+                    }}
             },
             {
                     "Priadko Dima",
@@ -31,10 +37,10 @@ public class Database {
                     "5",
                     "male",
                     "Ukraine",
-                    new Object[]{
+                    new Object[][]{{
                             "Statistics",
                             "4"
-                    }
+                    }}
             },
             {
                     "Danilyuk Viktor",
@@ -42,10 +48,10 @@ public class Database {
                     "5",
                     "male",
                     "Ukraine",
-                    new Object[]{
+                    new Object[][]{{
                             "Testing",
                             "4"
-                    }
+                    }}
             },
             {
                     "Kiselyov Evgeniy",
@@ -53,21 +59,21 @@ public class Database {
                     "5",
                     "male",
                     "Ukraine",
-                    new Object[]{
+                    new Object[][]{{
                             "English",
                             "5"
-                    }
+                    }}
             },
             {
                     "Liza Ivanova",
                     "3108",
                     "3",
-                    "male",
+                    "female",
                     "Ukraine",
-                    new Object[]{
+                    new Object[][]{{
                             "Law",
                             "3"
-                    }
+                    }}
             }
     };
 
@@ -88,10 +94,10 @@ public class Database {
         };
 
         defaultTableModel = new DefaultTableModel(databaseResults, columns) {
-            public Class getColumnClass(int column) {
-                Class classToReturn;
+            public Class getColumnClass(int column) { // Override the getColumnClass method to get the
+                Class classToReturn;                    // class types of the data retrieved from the database
 
-                if ((column >= 0) && column < getColumnCount() - 1) {
+                if ((column >= 0) && column < getColumnCount()) {
                     classToReturn = getValueAt(0, column).getClass();
                 } else {
                     classToReturn = Object.class;
