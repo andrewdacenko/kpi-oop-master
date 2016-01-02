@@ -63,9 +63,17 @@ public class MainForm extends JFrame implements ActionListener {
             case ButtonsCommands.GOOD:
                 showGoodStudents();
                 break;
-            case ButtonsCommands.REMOVE:
+            case ButtonsCommands.EDIT:
                 int selectedRow = studentsTable.getSelectedRow();
                 int modelRow = studentsTable.convertRowIndexToModel(selectedRow);
+
+                if (modelRow >= 0) {
+                    editRow(selectedRow, modelRow);
+                }
+                break;
+            case ButtonsCommands.REMOVE:
+                selectedRow = studentsTable.getSelectedRow();
+                modelRow = studentsTable.convertRowIndexToModel(selectedRow);
 
                 if (modelRow >= 0) {
                     db.studentsTableModel.removeRow(modelRow);
