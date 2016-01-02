@@ -8,13 +8,13 @@ public class SearchForm extends JDialog {
     private JPanel contentPanel;
     private JScrollPane scrollPane;
     private JTable studentsTable;
-    private Dimension dimension = new Dimension(600, 400);
 
     StudentsTableModel studentsModel;
 
-    SearchForm(JFrame owner, String caption, Object[][] students) {
-        super(owner, caption, true);
+    SearchForm(String caption, Object[][] students) {
+        Dimension dimension = new Dimension(600, 400);
         setSize(dimension);
+        setTitle(caption);
         setLocationRelativeTo(null);
         scrollPane.setPreferredSize(dimension);
 
@@ -68,7 +68,6 @@ public class SearchForm extends JDialog {
 
                 if (e.getClickCount() == 2) {
                     StudentDetails.showDetails(owner, studentsModel, modelRow);
-                    return;
                 }
             }
         });

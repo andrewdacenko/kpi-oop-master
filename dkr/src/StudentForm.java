@@ -264,6 +264,4 @@ public class StudentForm extends JDialog {
 
         return input;
     }
-
-    ;
 }

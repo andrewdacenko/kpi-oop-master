@@ -13,13 +13,14 @@ public class MainForm extends JFrame implements ActionListener {
     private JButton removeButton;
     private JPanel mainPanel;
     private JScrollPane tableScroll;
-    private Dimension dimension = new Dimension(1200, 800);
 
     private Database db;
 
     public MainForm() {
+        Dimension dimension = new Dimension(1200, 800);
         setSize(dimension);
         setLocationRelativeTo(null);
+        mainPanel.setPreferredSize(dimension);
         tableScroll.setPreferredSize(dimension);
         setupGUI();
 
@@ -46,7 +47,6 @@ public class MainForm extends JFrame implements ActionListener {
         goodButton.addActionListener(this);
         goodButton.setActionCommand(ButtonsCommands.GOOD);
 
-        mainPanel.setPreferredSize(dimension);
         add(mainPanel);
         pack();
     }
@@ -84,12 +84,12 @@ public class MainForm extends JFrame implements ActionListener {
 
     private void showBestStudents() {
         Object[][] bestStudents = db.studentsTableModel.getBestStudents();
-        new SearchForm(this, "Only the Best", bestStudents);
+        new SearchForm("Only the Best", bestStudents);
     }
 
     private void showGoodStudents() {
         Object[][] goodStudents = db.studentsTableModel.getGoodStudents();
-        new SearchForm(this, "Only Good", goodStudents);
+        new SearchForm("Only Good", goodStudents);
     }
 
     private void createUIComponents() {
