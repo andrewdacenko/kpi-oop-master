@@ -1,3 +1,5 @@
+import com.andrewdacenko.elements.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -5,10 +7,10 @@ import java.awt.event.*;
 public class SearchForm extends JDialog {
     private JPanel contentPanel;
     private JScrollPane scrollPane;
-    private JTable resultsTable;
+    private JTable studentsTable;
     private Dimension dimension = new Dimension(600, 400);
 
-    StudentsTableModel studentsTableModel;
+    StudentsTableModel studentsModel;
 
     SearchForm(JFrame owner, String caption, Object[][] students) {
         super(owner, caption, true);
@@ -34,7 +36,7 @@ public class SearchForm extends JDialog {
         );
 
         for (Object[] student : students) {
-            studentsTableModel.addRow(student);
+            studentsModel.addRow(student);
         }
 
         pack();
@@ -42,7 +44,33 @@ public class SearchForm extends JDialog {
     }
 
     private void createUIComponents() {
-        studentsTableModel = new StudentsTableModel(null, Database.columns);
-        resultsTable = new JTable(studentsTableModel);
+        JDialog owner = this;
+        studentsModel = new StudentsTableModel(null, Database.columns);
+        studentsTable = new StudentsTable(studentsModel);
+        studentsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+
+                int r = studentsTable.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < studentsTable.getRowCount()) {
+                    studentsTable.setRowSelectionInterval(r, r);
+                } else {
+                    studentsTable.clearSelection();
+                }
+
+                int selectedRow = studentsTable.getSelectedRow();
+                int modelRow = studentsTable.convertRowIndexToModel(selectedRow);
+
+                if (modelRow < 0) {
+                    return;
+                }
+
+                if (e.getClickCount() == 2) {
+                    StudentDetails.showDetails(owner, studentsModel, modelRow);
+                    return;
+                }
+            }
+        });
     }
 }

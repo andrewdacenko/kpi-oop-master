@@ -1,8 +1,10 @@
-public class Score {
-    String discipline;
-    Integer mark;
+package com.andrewdacenko.structures;
 
-    Score(Object[] obj) {
+public class Score {
+    public String discipline;
+    public Integer mark;
+
+    public Score(Object[] obj) {
         discipline = (String) obj[0];
         mark = Integer.parseInt((String) obj[1]);
     }

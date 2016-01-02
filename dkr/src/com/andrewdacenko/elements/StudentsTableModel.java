@@ -1,10 +1,14 @@
+package com.andrewdacenko.elements;
+
+import com.andrewdacenko.structures.Student;
+
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.Vector;
 
 public class StudentsTableModel extends DefaultTableModel {
 
-    StudentsTableModel(Object[][] data, Object[] columns) {
+    public StudentsTableModel(Object[][] data, Object[] columns) {
         super(data, columns);
     }
 
@@ -36,7 +40,7 @@ public class StudentsTableModel extends DefaultTableModel {
     }
 
     public Object[][] getBestStudents() {
-        ArrayList<Object[]> students= new ArrayList<>();
+        ArrayList<Object[]> students = new ArrayList<>();
 
         for (Object[] student : getData()) {
             Student s = new Student(student);
@@ -50,7 +54,7 @@ public class StudentsTableModel extends DefaultTableModel {
     }
 
     public Object[][] getGoodStudents() {
-        ArrayList<Object[]> students= new ArrayList<>();
+        ArrayList<Object[]> students = new ArrayList<>();
 
         for (Object[] student : getData()) {
             Student s = new Student(student);

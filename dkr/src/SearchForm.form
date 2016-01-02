@@ -15,9 +15,11 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="a00dc" class="javax.swing.JTable" binding="resultsTable" custom-create="true">
+          <component id="a00dc" class="javax.swing.JTable" binding="studentsTable" custom-create="true">
             <constraints/>
-            <properties/>
+            <properties>
+              <enabled value="false"/>
+            </properties>
           </component>
         </children>
       </scrollpane>

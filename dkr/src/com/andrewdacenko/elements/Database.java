@@ -1,3 +1,7 @@
+package com.andrewdacenko.elements;
+
+import com.andrewdacenko.structures.DataGenerator;
+
 public class Database {
     public Object[][] databaseResults;
 

@@ -1,12 +1,14 @@
+package com.andrewdacenko.structures;
+
 import java.util.Random;
 
 public class DataGenerator {
-    static Random random = new Random(System.currentTimeMillis());
+    public static Random random = new Random(System.currentTimeMillis());
 
     public static Object[] generate() {
         boolean isMale = random.nextBoolean();
 
-        Object[] record = new Object[]{
+        return new Object[]{
                 DataGenerator.generateName(isMale),
                 "" + random.nextInt(999999),
                 "" + (random.nextInt(5) + 1),
@@ -14,8 +16,6 @@ public class DataGenerator {
                 countries[random.nextInt(countries.length)],
                 DataGenerator.generateScores(random.nextInt(5) + 1)
         };
-
-        return record;
     }
 
     public static Object[][] generate(int size) {
@@ -1043,7 +1043,7 @@ public class DataGenerator {
             "young"
     };
 
-    static String[] countries = {
+    public static String[] countries = {
             "Afghanistan",
             "Albania",
             "Algeria",

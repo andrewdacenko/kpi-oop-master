@@ -1,11 +1,8 @@
+import com.andrewdacenko.elements.*;
+
 import javax.swing.*;
-import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.awt.event.*;
 
 public class MainForm extends JFrame implements ActionListener {
     private JTable studentsTable;
@@ -58,7 +55,7 @@ public class MainForm extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case ButtonsCommands.ADD:
-                new AddForm(this, db.studentsTableModel);
+                new StudentForm(this, db.studentsTableModel);
                 break;
             case ButtonsCommands.BEST:
                 showBestStudents();
@@ -66,10 +63,12 @@ public class MainForm extends JFrame implements ActionListener {
             case ButtonsCommands.GOOD:
                 showGoodStudents();
                 break;
-
             case ButtonsCommands.REMOVE:
-                if (studentsTable.getSelectedRow() >= 0) {
-                    db.studentsTableModel.removeRow(studentsTable.getSelectedRow());
+                int selectedRow = studentsTable.getSelectedRow();
+                int modelRow = studentsTable.convertRowIndexToModel(selectedRow);
+
+                if (modelRow >= 0) {
+                    db.studentsTableModel.removeRow(modelRow);
                 }
                 break;
         }
@@ -77,32 +76,74 @@ public class MainForm extends JFrame implements ActionListener {
 
     private void showBestStudents() {
         Object[][] bestStudents = db.studentsTableModel.getBestStudents();
-
-        System.out.println(bestStudents);
         new SearchForm(this, "Only the Best", bestStudents);
     }
 
     private void showGoodStudents() {
         Object[][] goodStudents = db.studentsTableModel.getGoodStudents();
-
-        System.out.println(goodStudents);
         new SearchForm(this, "Only Good", goodStudents);
     }
 
     private void createUIComponents() {
+        JFrame owner = this;
+
         db = new Database();
 
-        studentsTable = new JTable(db.studentsTableModel);
-        studentsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        studentsTable = new StudentsTable(db.studentsTableModel);
+        studentsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
 
-        JComboBox<String> comboBox = new JComboBox<>();
-        comboBox.addItem("male");
-        comboBox.addItem("female");
+                int r = studentsTable.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < studentsTable.getRowCount()) {
+                    studentsTable.setRowSelectionInterval(r, r);
+                } else {
+                    studentsTable.clearSelection();
+                }
 
-        TableColumn genderColumn = studentsTable.getColumnModel().getColumn(3);
-        genderColumn.setCellEditor(new DefaultCellEditor(comboBox));
+                int selectedRow = studentsTable.getSelectedRow();
+                int modelRow = studentsTable.convertRowIndexToModel(selectedRow);
 
-        TableColumn scoresColumn = studentsTable.getColumnModel().getColumn(5);
-        scoresColumn.setCellRenderer(new ScoresCellRenderer());
+                if (modelRow < 0) {
+                    return;
+                }
+
+                if (e.getClickCount() == 2) {
+                    StudentDetails.showDetails(owner, db.studentsTableModel, modelRow);
+                    return;
+                }
+
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
+                    JPopupMenu popup = createRowPopup(selectedRow, modelRow);
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
+
+    private void editRow(int selectedRow, int modelRow) {
+        JDialog form = new StudentForm(this, db.studentsTableModel, modelRow);
+        form.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                studentsTable.setRowSelectionInterval(selectedRow, selectedRow);
+            }
+        });
+    }
+
+    private JPopupMenu createRowPopup(int selectedRow, int modelRow) {
+        JPopupMenu menu = new JPopupMenu();
+
+        JMenuItem editItem = new JMenuItem("Edit");
+        editItem.addActionListener(e -> editRow(selectedRow, modelRow));
+        menu.add(editItem);
+
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        deleteItem.addActionListener(e -> db.studentsTableModel.removeRow(modelRow));
+        menu.add(deleteItem);
+
+        return menu;
     }
 }

@@ -1,4 +1,4 @@
-import java.util.Objects;
+package com.andrewdacenko.structures;
 
 public class Student {
 
