@@ -18,20 +18,14 @@ public class Student {
         scores = (Scores) record[5];
     }
 
-    public Object getDataByIndex(int index) {
-        switch (index) {
-            case 0:
-                return name;
-            case 1:
-                return studentId;
-            case 2:
-                return course;
-            case 3:
-                return gender;
-            case 4:
-                return country;
-            default:
-                return scores;
-        }
+    public boolean isBest() {
+        boolean isSecondCourse = course == 2;
+        boolean isOnlyA = Math.abs(scores.getAverage() - 5) <= 0.0001d;
+
+        return isSecondCourse && isOnlyA;
+    }
+
+    public boolean isGood() {
+        return scores.getAverage() >= 4.0d;
     }
 }

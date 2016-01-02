@@ -1,15 +1,11 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public class MainForm extends JFrame implements ActionListener {
     private JTable studentsTable;
@@ -19,10 +15,15 @@ public class MainForm extends JFrame implements ActionListener {
     private JButton bestButton;
     private JButton removeButton;
     private JPanel mainPanel;
+    private JScrollPane tableScroll;
+    private Dimension dimension = new Dimension(1200, 800);
 
     private Database db;
 
     public MainForm() {
+        setSize(dimension);
+        setLocationRelativeTo(null);
+        tableScroll.setPreferredSize(dimension);
         setupGUI();
 
         addWindowListener(new WindowAdapter() {
@@ -31,7 +32,6 @@ public class MainForm extends JFrame implements ActionListener {
             }
         });
     }
-
 
     private void setupGUI() {
         addButton.addActionListener(this);
@@ -49,6 +49,7 @@ public class MainForm extends JFrame implements ActionListener {
         goodButton.addActionListener(this);
         goodButton.setActionCommand(ButtonsCommands.GOOD);
 
+        mainPanel.setPreferredSize(dimension);
         add(mainPanel);
         pack();
     }
@@ -57,49 +58,51 @@ public class MainForm extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case ButtonsCommands.ADD:
-                Student result = new AddForm().showDialog();
-                if (result != null) {
-                    db.students.add(result);
-                    this.repaint();
-                }
+                new AddForm(this, db.studentsTableModel);
                 break;
             case ButtonsCommands.BEST:
-                ArrayList<String> students = new ArrayList<String>();
-                for (Object v : db.databaseResults) {
-                    Object[] row = (Object[]) v;
-                    Scores scores = (Scores) row[5];
-
-                    if (scores.getAverage() >= 5) {
-                        students.add((String) row[0]);
-                    }
-                }
-                System.out.println(students);
-                SearchResults sr = new SearchResults("Only the Best", students.toArray());
-                sr.setVisible(true);
+                showBestStudents();
                 break;
-
             case ButtonsCommands.GOOD:
+                showGoodStudents();
                 break;
 
             case ButtonsCommands.REMOVE:
                 if (studentsTable.getSelectedRow() >= 0) {
-                    db.students.remove(studentsTable.getSelectedRow());
-                    this.repaint();
+                    db.studentsTableModel.removeRow(studentsTable.getSelectedRow());
                 }
                 break;
         }
     }
 
+    private void showBestStudents() {
+        Object[][] bestStudents = db.studentsTableModel.getBestStudents();
+
+        System.out.println(bestStudents);
+        new SearchForm(this, "Only the Best", bestStudents);
+    }
+
+    private void showGoodStudents() {
+        Object[][] goodStudents = db.studentsTableModel.getGoodStudents();
+
+        System.out.println(goodStudents);
+        new SearchForm(this, "Only Good", goodStudents);
+    }
+
     private void createUIComponents() {
         db = new Database();
 
-        studentsTable = new JTable(db.defaultTableModel);
+        studentsTable = new JTable(db.studentsTableModel);
+        studentsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
-        TableColumn genderColumn = studentsTable.getColumnModel().getColumn(3);
-
-        JComboBox comboBox = new JComboBox();
+        JComboBox<String> comboBox = new JComboBox<>();
         comboBox.addItem("male");
         comboBox.addItem("female");
+
+        TableColumn genderColumn = studentsTable.getColumnModel().getColumn(3);
         genderColumn.setCellEditor(new DefaultCellEditor(comboBox));
+
+        TableColumn scoresColumn = studentsTable.getColumnModel().getColumn(5);
+        scoresColumn.setCellRenderer(new ScoresCellRenderer());
     }
 }

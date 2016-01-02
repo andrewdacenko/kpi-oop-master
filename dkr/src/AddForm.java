@@ -1,39 +1,46 @@
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
+import java.awt.*;
 import java.awt.event.*;
 
 public class AddForm extends JDialog {
     private JPanel addPanel;
     private JTextField nameField;
-    private JTextField idField;
-    private JTextField courseField;
-    private JLabel fullNameLabel;
-    private JLabel studentIdLabel;
-    private JLabel courseLabel;
-    private JLabel genderLabel;
-    private JComboBox genderBox;
+    private JComboBox<String> genderBox;
     private JTable scoresTable;
     private JButton okButton;
     private JButton cancelButton;
-    private JTextField countryField;
+    private JComboBox<String> countryBox;
+    private JScrollPane tableScroll;
+    private JSpinner course;
+    private JSpinner studentId;
+    private JLabel fullNameLabel;
+    private JLabel studentIdLabel;
+    private JLabel genderLabel;
+    private JLabel courseLabel;
     private JLabel countryLabel;
+    private Dimension dimension = new Dimension(600, 400);
+    private StudentsTableModel studentsTableModel;
 
-    AbstractTableModel scoresModel;
-    Scores scores;
-    Object[][] oScores;
+    StudentsTableModel scoresTableModel;
     JDialog self;
 
-    private boolean isOK;
+    public AddForm(JFrame owner, StudentsTableModel studentsTableModel) {
+        super(owner, "Add", true);
 
-    public AddForm() {
+        this.studentsTableModel = studentsTableModel;
         self = this;
+
+        setSize(dimension);
+        setLocationRelativeTo(null);
+        tableScroll.setPreferredSize(dimension);
+
         setContentPane(addPanel);
         setModal(true);
         getRootPane().setDefaultButton(okButton);
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                onOK();
+                addStudent();
             }
         });
 
@@ -56,56 +63,35 @@ public class AddForm extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        pack();
+        setVisible(true);
     }
 
     private void createUIComponents() {
-        String[] genders = new String[]{"male", "female"};
-        genderBox = new JComboBox(genders);
-        genderBox.setSelectedIndex(0);
+        boolean isMale = DataGenerator.random.nextBoolean();
+        setRandomName(isMale);
+        createGenderComboBox(isMale);
+        createCountryComboBox();
+        createCourseSpinner();
+        createStudentIdSpinner();
+        createScoresTable();
+    }
 
+    private void setRandomName(boolean isMale) {
+        nameField = new JTextField(DataGenerator.generateName(isMale));
+    }
+
+    private void createScoresTable() {
         Object[] columns = new Object[]{
                 "Discipline",
                 "Score"
         };
 
-        scores = new Scores();
-
-        Object[] defaultObj = {"discipline", "5"};
-
-        scores.add(new Score(defaultObj));
-
-        oScores = new Object[][]{{"math", "2"}};
-
-        scoresModel = new AbstractTableModel() {
-            @Override
-            public int getRowCount() {
-                return scores.size();
-            }
-
-            @Override
-            public int getColumnCount() {
-                return 2;
-            }
-
-            @Override
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                Score s = scores.get(rowIndex);
-
-                return columnIndex == 0 ? s.discipline : s.mark;
-            }
-
-            @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-                Score s = scores.get(rowIndex);
-                if (columnIndex == 0) {
-                    s.discipline = (String) aValue;
-                } else {
-                    s.mark = Integer.parseInt((String) aValue);
-                }
-            }
-        };
-
-        scoresTable = new JTable(scoresModel);
+        scoresTableModel = new StudentsTableModel(new Object[][]{
+                DataGenerator.generateScore()
+        }, columns);
+        scoresTable = new JTable(scoresTableModel);
         scoresTable.setAutoCreateColumnsFromModel(true);
 
         scoresTable.addMouseListener(new MouseAdapter() {
@@ -113,39 +99,75 @@ public class AddForm extends JDialog {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 if (e.getClickCount() == 2) {
-                    scores.add(new Score(new Object[]{"new", "0"}));
-                    self.repaint();
+                    scoresTableModel.addRow(DataGenerator.generateScore());
                 }
             }
         });
     }
 
-    private void onOK() {
-        isOK = true;
-        dispose();
+    private void createGenderComboBox(boolean isMale) {
+        String[] genders = new String[]{"male", "female"};
+        genderBox = new JComboBox<>(genders);
+        genderBox.setSelectedIndex(isMale ? 0: 1);
+    }
+
+    private void createCountryComboBox() {
+        countryBox = new JComboBox<>(DataGenerator.countries);
+        countryBox.setSelectedIndex(DataGenerator.random.nextInt(DataGenerator.countries.length));
+    }
+
+    private void createCourseSpinner() {
+        String[] courses = {"1", "2", "3", "4", "5"};
+        SpinnerListModel courseModel = new SpinnerListModel(courses);
+        course = new JSpinner(courseModel);
+        courseModel.setValue(courses[DataGenerator.random.nextInt(courses.length)]);
+    }
+
+    private void createStudentIdSpinner() {
+        SpinnerModel model =
+                new SpinnerNumberModel(
+                        DataGenerator.random.nextInt(999999), //initial value
+                        0, //min
+                        999999, //max
+                        1 // step
+                );
+
+        studentId = new JSpinner(model);
     }
 
     private void onCancel() {
-        isOK = false;
         dispose();
     }
 
-    public Student showDialog() {
-        pack();
-        setVisible(true);
+    private void addStudent() {
+        Object[] oStudent = new Object[]{
+                nameField.getText(),
+                studentId.getValue().toString(),
+                course.getValue(),
+                genderBox.getSelectedItem(),
+                countryBox.getSelectedItem(),
+                getScores()
+        };
 
-        if (isOK) {
-            Student s = new Student(new Object[]{
-                    nameField.getText(),
-                    idField.getText(),
-                    courseField.getText(),
-                    genderBox.getSelectedItem(),
-                    countryField.getText(),
-                    scores
-            });
+        try {
+            Student s = new Student(oStudent);
+            studentsTableModel.addRow(oStudent);
 
-            return s;
-        } else
-            return null;
+            dispose();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "У полі " + e.getMessage() + " необхідно ввести числові дані");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private Scores getScores() {
+        Scores scores = new Scores();
+
+        for (Object[] score : scoresTableModel.getData()) {
+            scores.add(new Score(score));
+        }
+
+        return scores;
     }
 }

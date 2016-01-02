@@ -22,6 +22,7 @@ public class Scores extends ArrayList<Score> {
             msg += score + ", ";
         }
 
-        return msg + "avg: " + String.format("%.2f", getAverage());
+//        return msg + "avg: " + String.format("%.2f", getAverage());
+        return String.format("%.2f", getAverage());
     }
 }
