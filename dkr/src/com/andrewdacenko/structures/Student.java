@@ -26,6 +26,6 @@ public class Student {
     }
 
     public boolean isGood() {
-        return scores.getAverage() >= 4.0d;
+        return scores.getAverage() >= 4.0d && !country.equals("Ukraine");
     }
 }
