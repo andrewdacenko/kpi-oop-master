@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class MyClientThread implements Runnable {
 
     public void run() {
-        Frame frame = new Frame("DKR");
+        Frame frame = new Frame("Students");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
