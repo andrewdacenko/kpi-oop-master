@@ -1,0 +1,10 @@
+group 'lab-2-3'
+version '1.0-SNAPSHOT'
+
+subprojects {
+    apply plugin : "java"
+
+    repositories {
+        mavenCentral()
+    }
+}

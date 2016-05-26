@@ -1,0 +1,8 @@
+group 'lab-2-3'
+version '1.0-SNAPSHOT'
+
+apply plugin: "java"
+
+dependencies {
+    compile "joda-time:joda-time:2.4"
+}

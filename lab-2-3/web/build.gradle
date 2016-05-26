@@ -1,0 +1,12 @@
+group 'lab-2-3'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'war'
+apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+
+dependencies {
+    compile project(':utils')
+    compile 'javax.servlet:servlet-api:2.5'
+    runtime 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.1'
+}
+
