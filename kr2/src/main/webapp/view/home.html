@@ -1,0 +1,29 @@
+<div class="container">
+    <h1 class="page-header">Students <span class="btn btn-sm" ng-click="home.addStudent()">Add</span>  <sorting-criteria></sorting-criteria></h1>
+    <table class="table table-stripped">
+        <thead>
+        <tr>
+            <th ng-repeat="header in home.headers">
+                {{::header.title}}
+            </th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="student in home.students">
+            <td ng-repeat="header in home.headers">
+                    <span ng-switch on="header.field">
+                        <span ng-switch-when="country">{{::student.country.name}}</span>
+                        <span ng-switch-when="gender">{{::student[header.field] ? 'female' : 'male'}}</span>
+                        <span ng-switch-when="score" uib-tooltip uib-tooltip-template="'view/marks.html'">{{::student.score | limitTo:3}}</span>
+                        <span ng-switch-default>{{::student[header.field]}}</span>
+                    </span>
+            </td>
+            <td>
+                <span class="btn btn-info" ng-click="home.addStudent(student)">Edit</span>
+                <span class="btn btn-danger" ng-click="home.deleteStudent(student)">Delete</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

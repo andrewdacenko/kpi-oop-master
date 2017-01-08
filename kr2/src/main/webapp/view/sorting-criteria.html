@@ -1,0 +1,24 @@
+<div class="btn-group">
+    <label class="btn"
+           ng-class="{'btn-primary': criteria.title = $ctrl.selected}"
+           ng-model="$ctrl.selected"
+           ng-click="$ctrl.onCriteriaChange($ctrl.criteria[0])"
+           uib-btn-radio="$ctrl.criteria[0]">
+        {{$ctrl.criteria[0].title}}
+    </label>
+    <label class="btn"
+           ng-class="{'btn-primary': criteria.title = $ctrl.selected}"
+           ng-model="$ctrl.selected"
+           ng-click="$ctrl.onCriteriaChange($ctrl.criteria[1])"
+           uib-btn-radio="$ctrl.criteria[1]">
+        {{$ctrl.criteria[1].title}}
+    </label>
+    <label class="btn"
+           ng-class="{'btn-primary': criteria.title = $ctrl.selected}"
+           ng-model="$ctrl.selected"
+           ng-click="$ctrl.onCriteriaChange($ctrl.criteria[2])"
+           uib-btn-radio="$ctrl.criteria[2]">
+        {{$ctrl.criteria[2].title}}
+    </label>
+</div>
+
