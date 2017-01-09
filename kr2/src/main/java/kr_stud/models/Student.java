@@ -59,7 +59,8 @@ public class Student {
                    int course,
                    int gender,
                    Country country,
-                   String identity) {
+                   String identity,
+                   List<Mark> marks) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
@@ -67,6 +68,7 @@ public class Student {
         this.gender = gender;
         this.country = country;
         this.identity = identity;
+        this.marks = marks;
     }
 
     public long getId() {

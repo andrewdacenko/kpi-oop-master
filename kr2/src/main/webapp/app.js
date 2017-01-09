@@ -5,6 +5,19 @@ angular.element(document).ready(function () {
 });
 
 angular.module('app')
+.directive('convertToNumber', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function(val) {
+        return parseInt(val, 10);
+      });
+      ngModel.$formatters.push(function(val) {
+        return '' + val;
+      });
+    }
+  };
+})
 .constant('CRITERIA', [
     {title: 'All Students', path: '/'},
     {title: 'Best of 2 Course', path: '/best'},
@@ -62,6 +75,7 @@ angular.module('app')
 
     vm.addStudent = addStudent;
     vm.deleteStudent = deleteStudent;
+    vm.changeScore = changeScore;
 
     $scope.$on('criteria-selected', onCriteriaChange)
 
@@ -98,7 +112,7 @@ angular.module('app')
                 countries: function($http) {
                     return $http.get('/countries/').then(function(response) {
                         return response.data;
-                    })
+                    });
                 }
             }
         });
@@ -106,6 +120,62 @@ angular.module('app')
         modal.result.then(function() {
             getStudents();
         });
+    }
+
+    function changeScore(student) {
+        var modal = $uibModal.open({
+            templateUrl: 'view/scores.html',
+            controller: function($scope, $uibModalInstance, student, subjects, $http) {
+                $scope.student = student;
+                $scope.subjects = subjects;
+
+                $scope.mark = {
+                    student: student
+                };
+                $scope.marks = student.marks;
+                $scope.create = create;
+                $scope.close = close;
+                $scope.removeScore = removeScore;
+
+                function create() {
+                    $http.post('/marks/', $scope.mark)
+                        .then(function(response) {
+                            $scope.mark.subject = null;
+                            $scope.mark.mark = undefined;
+                            return $http.get('/students/' + student.id)
+                        })
+                        .then((response) => {
+                            $scope.marks = response.data.marks;
+                        });
+                }
+
+                function removeScore(mark) {
+                    $http.delete('/marks/' + mark.id)
+                        .then((response) => {
+                            const index = $scope.marks.indexOf(mark);
+                            if (index !== -1) {
+                                $scope.marks.splice(index, 1);
+                            }
+                        });
+                }
+
+                function close() {
+                    $uibModalInstance.dismiss();
+                }
+            },
+            resolve: {
+                student: function() {
+                    return student || {};
+                },
+                subjects: function($http) {
+                    return $http.get('/subjects/').then(function(response) {
+                        return response.data;
+                    });
+                }
+            }
+        });
+
+        modal.result.then(getStudents, getStudents);
     }
 
     function deleteStudent(student) {

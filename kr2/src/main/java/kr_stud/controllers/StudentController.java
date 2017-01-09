@@ -21,6 +21,12 @@ public class StudentController {
         return (List<Student>) studentDao.findAll();
     }
 
+    @RequestMapping(value = "/{id}", produces = "application/json")
+    @ResponseBody
+    public Student getStudent(@PathVariable long id) {
+        return studentDao.findOne(id);
+    }
+
     @RequestMapping(value = "/best", produces = "application/json")
     @ResponseBody
     public List<Student> getBestOfSecondCourse() {
